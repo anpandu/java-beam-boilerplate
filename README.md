@@ -1,7 +1,7 @@
 Java Apache Beam Boilerplate
 =========
 
-Open sourcing my old template for Apache Beam for Java. This repo contains multiple examples.
+This repo contains my old templates for Apache Beam for Java, more examples coming.
 
 ## Requirements
 Requirements below need to be installed.
