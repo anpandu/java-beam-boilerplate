@@ -7,14 +7,15 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
-import org.apache.beam.sdk.io.TextIO;
-import org.apache.beam.sdk.io.kafka.KafkaIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
+
+import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.io.kafka.KafkaIO;
 import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.values.KV;
 
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class BeamKafkaWordCount {
@@ -22,7 +23,7 @@ public class BeamKafkaWordCount {
     public interface TemplateOptions extends PipelineOptions {
 
         @Description("Kafka host.")
-        @Default.String("stde-dev:9092")
+        @Default.String("host:9092")
         String getKafkaHost();
         void setKafkaHost(String value);
 
@@ -71,9 +72,7 @@ public class BeamKafkaWordCount {
         .apply("ExtractWords", ParDo.of(new DoFn<String, String>() {
             @ProcessElement
             public void processElement(ProcessContext c) {
-                System.out.println("> " + c.element());
                 for (String word : c.element().split(TOKENIZER_PATTERN)) {
-                    System.out.println("> " + word);
                     if (!word.isEmpty()) {
                         c.output(word);
                     }

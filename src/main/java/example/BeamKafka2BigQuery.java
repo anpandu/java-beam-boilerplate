@@ -10,6 +10,9 @@ import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.ValueProvider;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
+
+import org.apache.beam.sdk.io.kafka.KafkaIO;
+import org.apache.beam.sdk.io.kafka.KafkaRecord;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.Count;
@@ -18,8 +21,6 @@ import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.transforms.Values;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.io.kafka.KafkaIO;
-import org.apache.beam.sdk.io.kafka.KafkaRecord;
 // import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -34,7 +35,7 @@ public class BeamKafka2BigQuery {
     public interface TemplateOptions extends PipelineOptions {
 
         @Description("Kafka host.")
-        @Default.String("stde-dev:9092")
+        @Default.String("myhost:9092")
         String getKafkaHost();
         void setKafkaHost(String value);
 
@@ -49,7 +50,7 @@ public class BeamKafka2BigQuery {
         void setGSTempLocation(String value);
 
         @Description("Big Query table id destination (project:dataset.table).")
-        @Default.String("styletheory-1254:tmp.k2bq_2")
+        @Default.String("myproject:mydataset.mytable")
         String getBQTable();
         void setBQTable(String value);
     }
@@ -92,7 +93,6 @@ public class BeamKafka2BigQuery {
         final String KAFKA_HOST = options.getKafkaHost();
         final String KAFKA_TOPIC = options.getKafkaTopic();
         final String BQ_TABLE = options.getBQTable();
-        // final String TOKENIZER_PATTERN = " +";
         final Integer MAX_NUM_RECORDS = 10;
 
         Pipeline pipeline = Pipeline.create(options);

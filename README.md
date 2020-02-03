@@ -1,7 +1,7 @@
 Java Apache Beam Boilerplate
 =========
 
-Open sourcing my old template for Apache Beam for Java.
+Open sourcing my old template for Apache Beam for Java. This repo contains multiple examples.
 
 ## Requirements
 Requirements below need to be installed.
@@ -49,6 +49,16 @@ java -cp target/scala-2.11/hello-assembly-1.0.jar \
     --serviceAccount="<your_service_account>" \
     --dataflowWorkerJar=hello-assembly-1.0.jar \
     --runner=DataflowRunner
+```
+
+### Running Kafka to Kafka
+Via local machine
+```sh
+java -cp target/scala-2.11/hello-assembly-1.0.jar \
+    example.BeamKafka2Kafka \
+    --kafkaHost="<host>:<port>" \
+    --kafkaTopicSource="<topic1>" \
+    --kafkaTopicSink="<topic2>"
 ```
 
 ### Running Kafka Word Count
