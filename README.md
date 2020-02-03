@@ -1,9 +1,10 @@
-Hello
+Java Apache Beam Boilerplate
 =========
 
-Hello world in scala (SBT).
+Open sourcing my old template for Apache Beam for Java.
 
-### Requirements
+## Requirements
+Requirements below need to be installed.
 ```
 JDK 1.8
 Scala 2.11.9
@@ -11,19 +12,54 @@ SBT 0.13.15
 SBT Assembly 0.14.4
 ```
 
-### Run
+## Running Source Code
 
-```sh
-sbt run
-```
-
-### Assembly & Run
+### Assembly
 
 ```sh
 sbt assembly
-./target/scala-2.11/hello-assembly-1.0.jar
+java -cp ./target/scala-2.11/hello-assembly-1.0.jar example.Hola
 ```
 
-### License
+### Running Kafka to BigQuery
+Via local machine
+```sh
+GOOGLE_APPLICATION_CREDENTIALS=<json_key_file>
+java -cp target/scala-2.11/hello-assembly-1.0.jar \
+    example.BeamKafka2BigQuery \
+    --kafkaHost="<host>:<port>" \
+    --kafkaTopic="<topic>" \
+    --project="<gcp_project>" \
+    --BQTable="<gcp_project>:<bq_dataset>.<bq_table>" \
+    --gcpTempLocation="gs://<path>" \
+    --GSTempLocation="gs://<path>"
+```
+
+Via GCP DataFlow
+```sh
+GOOGLE_APPLICATION_CREDENTIALS=<json_key_file>
+java -cp target/scala-2.11/hello-assembly-1.0.jar \
+    example.BeamKafka2BigQuery \
+    --kafkaHost="<host>:<port>" \
+    --kafkaTopic="<topic>" \
+    --project="<gcp_project>" \
+    --BQTable="<gcp_project>:<bq_dataset>.<bq_table>" \
+    --gcpTempLocation="gs://<path>" \
+    --GSTempLocation="gs://<path>" \
+    --serviceAccount="<your_service_account>" \
+    --dataflowWorkerJar=hello-assembly-1.0.jar \
+    --runner=DataflowRunner
+```
+
+### Running Kafka Word Count
+Via local machine
+```sh
+java -cp target/scala-2.11/hello-assembly-1.0.jar \
+    example.BeamKafkaWordCount \
+    --kafkaHost="<host>:<port>" \
+    --kafkaTopic="<topic>"
+```
+
+## License
 
 MIT © [Ananta Pandu](anpandumail@gmail.com)

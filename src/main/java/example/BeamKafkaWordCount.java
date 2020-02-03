@@ -3,6 +3,10 @@ package example;
 import com.google.common.collect.ImmutableMap;
 
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.kafka.KafkaIO;
 import org.apache.beam.sdk.options.PipelineOptions;
@@ -15,14 +19,37 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class BeamKafkaWordCount {
 
-    static final String DIR_OUTPUT = "target/_output/wordcount";
-    static final String KAFKA_HOST = "stde-dev:9092";
-    static final String KAFKA_TOPIC = "mytopic1";
-    static final String TOKENIZER_PATTERN = " +";
-    static final Integer MAX_NUM_RECORDS = 1000;
+    public interface TemplateOptions extends PipelineOptions {
+
+        @Description("Kafka host.")
+        @Default.String("stde-dev:9092")
+        String getKafkaHost();
+        void setKafkaHost(String value);
+
+        @Description("Kafka topic.")
+        @Default.String("mytopic1")
+        String getKafkaTopic();
+        void setKafkaTopic(String value);
+
+        @Description("Directory for output file.")
+        @Default.String("target/_output/wordcount")
+        String getDirOutput();
+        void setDirOutput(String value);
+    }
 
     public static void main(String[] args) {
-        PipelineOptions options = PipelineOptionsFactory.create();
+
+        TemplateOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(TemplateOptions.class);
+
+        final String DIR_OUTPUT = options.getDirOutput();
+        final String KAFKA_HOST = options.getKafkaHost();
+        final String KAFKA_TOPIC = options.getKafkaTopic();
+        final String TOKENIZER_PATTERN = " +";
+        final Integer MAX_NUM_RECORDS = 5;
+
+        System.out.println("DIR_OUTPUT " + DIR_OUTPUT);
+        System.out.println("KAFKA_HOST " + KAFKA_HOST);
+        System.out.println("KAFKA_TOPIC " + KAFKA_TOPIC);
 
         // Create the Pipeline object with the options we defined above.
         Pipeline p = Pipeline.create(options);
@@ -44,7 +71,9 @@ public class BeamKafkaWordCount {
         .apply("ExtractWords", ParDo.of(new DoFn<String, String>() {
             @ProcessElement
             public void processElement(ProcessContext c) {
+                System.out.println("> " + c.element());
                 for (String word : c.element().split(TOKENIZER_PATTERN)) {
+                    System.out.println("> " + word);
                     if (!word.isEmpty()) {
                         c.output(word);
                     }

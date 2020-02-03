@@ -36,3 +36,5 @@ assemblyMergeStrategy in assembly := {
   case PathList("META-INF", "services", xs @ _*) => MergeStrategy.concat
   case x => MergeStrategy.first
 }
+
+mainClass in (Compile, run) := Some("example.Hola")
